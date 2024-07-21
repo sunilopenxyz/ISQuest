@@ -11,7 +11,12 @@ const {
 } = require("./services/questService");
 const app = express();
 
+// Use the PORT environment variable provided by Heroku
+const port = process.env.PORT || 3000;
+
 dbConnect();
+
+app.use(express.json()); // Middleware to parse JSON request bodies
 
 app.get("/", async (req, res) => {
   res.status(200).json({ status: true });
@@ -133,6 +138,6 @@ app.get("/run-cron", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  logger.info("Server running on port 3000");
+app.listen(port, () => {
+  logger.info(`Server running on port ${port}`);
 });
