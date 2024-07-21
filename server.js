@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const dbConnect = require("./lib/dbConnect");
 const QuestProgress = require("./models/QuestProgress");
 const logger = require("./lib/logger");
@@ -11,12 +12,27 @@ const {
 } = require("./services/questService");
 const app = express();
 
-// Use the PORT environment variable provided by Heroku
 const port = process.env.PORT || 3000;
 
-dbConnect();
+// Allow requests from any subdomain of galxe.com
+const allowedOrigins = [/\.galxe\.com$/];
 
-app.use(express.json()); // Middleware to parse JSON request bodies
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.some((pattern) => pattern.test(origin))) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
+
+// Middleware to parse JSON request bodies
+app.use(express.json());
+
+dbConnect();
 
 app.get("/", async (req, res) => {
   res.status(200).json({ status: true });
