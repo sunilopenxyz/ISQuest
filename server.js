@@ -13,6 +13,10 @@ const app = express();
 
 dbConnect();
 
+app.get("/", async (req, res) => {
+  res.status(200).json({ status: true });
+});
+
 app.get("/check-quest", async (req, res) => {
   const { wallet, quest } = req.query;
 
@@ -127,14 +131,6 @@ app.get("/run-cron", async (req, res) => {
     logger.error(`Error running cron job: ${error.message}`);
     res.status(500).json({ error: error.message });
   }
-});
-
-app.listen(3000, () => {
-  logger.info("Server running on port 3000");
-});
-
-app.listen(3000, () => {
-  logger.info("Server running on port 3000");
 });
 
 app.listen(3000, () => {
